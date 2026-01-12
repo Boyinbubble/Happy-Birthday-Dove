@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rataalada</title>
+<style>
+body {
+  background: black;
+  color: #00ff9c;
+  font-family: "Courier New", monospace;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#container {
+  width: 90%;
+  max-width: 720px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.hidden {
+  display: none;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  background: #00ff9c;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+#readyBox {
+  margin-top: 30px;
+  padding: 15px;
+  border: 2px solid #00ff9c;
+  text-align: center;
+  cursor: pointer;
+  display: none;
+  letter-spacing: 3px;
+  animation: shake 0.5s infinite alternate;
+}
+
+@keyframes shake {
+  from { transform: translateX(-2px); }
+  to { transform: translateX(2px); }
+}
+
+input {
+  background: black;
+  border: 2px solid #00ff9c;
+  color: #00ff9c;
+  padding: 10px;
+  width: 100%;
+  margin-top: 15px;
+  font-family: inherit;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  background: black;
+  color: #00ff9c;
+  border: 2px solid #00ff9c;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #00ff9c;
+  color: black;
+}
+
+a {
+  color: #00ff9c;
+  text-decoration: none;
+  border: 2px solid #00ff9c;
+  padding: 12px;
+  display: inline-block;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="container">
+
+<!-- INTRO -->
+<div id="intro">
+  <span id="introText"></span><span class="cursor"></span>
+  <div id="readyBox">READY</div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="hidden">
+  <div id="entityText"></div>
+  <input id="answer" placeholder="Your answer">
+  <button onclick="submitAnswer()">SUBMIT</button>
+</div>
+
+</div>
+
+<script>
+const introMessage = `
+You stopped here.
+That was a choice.
+
+Birthdays.
+People celebrate survival like it’s an achievement.
+
+Twenty years.
+Still curious.
+Still reckless.
+
+I’m not here to congratulate you.
+
+I’m here to play.
+
+Let’s begin.
+`;
+
+let i = 0;
+const speed = 40;
+const introText = document.getElementById("introText");
+const readyBox = document.getElementById("readyBox");
+
+function typeIntro() {
+  if (i < introMessage.length) {
+    introText.innerHTML += introMessage.charAt(i++);
+    setTimeout(typeIntro, speed);
+  } else {
+    setTimeout(() => readyBox.style.display = "block", 800);
+  }
+}
+typeIntro();
+
+readyBox.onclick = () => {
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  loadRiddle();
+};
+
+let level = 1;
+
+const riddles = {
+  1: {
+    q: "I speak without a mouth and hear without ears. What am I?",
+    a: "echo",
+    win: "Correct. Beginner’s luck. Don’t get comfortable.",
+    lose: "No. That was embarrassing. Try again."
+  },
+  2: {
+    q: "The more you take, the more you leave behind. What am I?",
+    a: "footsteps",
+    win: "Again? Annoying. You’re learning faster than expected.",
+    lose: "Wrong. Think harder. Or don’t. It’s amusing."
+  },
+  3: {
+    q: "I’m always ahead of you, but you’ll never catch me. What am I?",
+    a: "future",
+    win: "…Enough. You win. I misjudged you.",
+    lose: "You won’t make it. Most don’t."
+  }
+};
+
+function loadRiddle() {
+  document.getElementById("entityText").innerText =
+    "RIDDLE " + level + ":\n" + riddles[level].q;
+  document.getElementById("answer").value = "";
+}
+
+function submitAnswer() {
+  const userAnswer = document.getElementById("answer").value.to
